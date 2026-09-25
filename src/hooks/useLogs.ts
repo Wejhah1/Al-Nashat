@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { supabase } from '../lib/supabase'
+import { onTableChange } from '../lib/realtime'
 import type { LogEntry, LogType } from '../lib/types'
 
 export interface LogFilter {
@@ -43,26 +44,23 @@ export function useLogs(filter: LogFilter = {}, pageSize = PAGE) {
       setHasMore(rows.length === pageSize)
       setLoading(false)
     })
-    const ch = supabase
-      .channel(`logs-${key}-${Math.random().toString(36).slice(2)}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'logs' }, (p) => {
-        const f = filterRef.current
-        if (p.eventType === 'INSERT') {
-          const n = p.new as LogEntry
-          if ((f.memberId && n.member_id !== f.memberId) || (f.groupId && n.group_id !== f.groupId) || (f.type && n.type !== f.type)) return
-          setItems((prev) => (prev.some((x) => x.id === n.id) ? prev : [n, ...prev]))
-        } else if (p.eventType === 'UPDATE') {
-          const n = p.new as LogEntry
-          setItems((prev) => prev.map((x) => (x.id === n.id ? { ...x, ...n } : x)))
-        } else if (p.eventType === 'DELETE') {
-          const o = p.old as { id: number }
-          setItems((prev) => prev.filter((x) => x.id !== o.id))
-        }
-      })
-      .subscribe()
+    const off = onTableChange('logs', (p) => {
+      const f = filterRef.current
+      if (p.eventType === 'INSERT') {
+        const n = p.new as unknown as LogEntry
+        if ((f.memberId && n.member_id !== f.memberId) || (f.groupId && n.group_id !== f.groupId) || (f.type && n.type !== f.type)) return
+        setItems((prev) => (prev.some((x) => x.id === n.id) ? prev : [n, ...prev]))
+      } else if (p.eventType === 'UPDATE') {
+        const n = p.new as unknown as LogEntry
+        setItems((prev) => prev.map((x) => (x.id === n.id ? { ...x, ...n } : x)))
+      } else if (p.eventType === 'DELETE') {
+        const o = p.old as { id: number }
+        setItems((prev) => prev.filter((x) => x.id !== o.id))
+      }
+    })
     return () => {
       alive = false
-      void supabase.removeChannel(ch)
+      off()
     }
   }, [key, query, pageSize])
 

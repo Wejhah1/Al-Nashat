@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { Award, CalendarCheck, CalendarX, Clock, Crown, LogOut, Phone, QrCode, Sparkles, Trophy, UserRound } from 'lucide-react'
-import { rpc, supabase } from '../lib/supabase'
+import { rpc } from '../lib/supabase'
+import { onTableChange } from '../lib/realtime'
 import type { PortalData } from '../lib/types'
 import { Button } from '../components/ui/Button'
 import { Scanner } from '../components/scanner/Scanner'
@@ -61,16 +62,10 @@ export default function Portal() {
   const memberId = data?.member.id
   useEffect(() => {
     if (!memberId || !key) return
-    const ch = supabase
-      .channel(`portal-${memberId}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'members', filter: `id=eq.${memberId}` }, () => {
-        void load(key).then((d) => d && setData(d))
-      })
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'member_badges', filter: `member_id=eq.${memberId}` }, () => {
-        void load(key).then((d) => d && setData(d))
-      })
-      .subscribe()
-    return () => void supabase.removeChannel(ch)
+    const refresh = () => void load(key).then((d) => d && setData(d))
+    const off1 = onTableChange('members', (p) => { if ((p.new as { id?: string })?.id === memberId) refresh() })
+    const off2 = onTableChange('member_badges', (p) => { if ((p.new as { member_id?: string })?.member_id === memberId) refresh() })
+    return () => { off1(); off2() }
   }, [memberId, key, load])
 
   if (loading) return <PageLoader />

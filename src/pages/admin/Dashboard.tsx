@@ -5,6 +5,7 @@ import { BarChart3, CalendarCheck, CreditCard, ScanLine, ScanQrCode, ShieldAlert
 import { useData } from '../../context/DataContext'
 import { useAuth } from '../../context/AuthContext'
 import { supabase } from '../../lib/supabase'
+import { onTableChange } from '../../lib/realtime'
 import { PageHeader, StatCard } from '../../components/ui/misc'
 import { LiveList } from '../../components/leaderboard/LiveFeed'
 import { GroupStandings } from '../../components/leaderboard/GroupStandings'
@@ -23,10 +24,7 @@ export function useTodayAttendance() {
       setCount(c ?? 0)
     }
     void load()
-    const ch = supabase.channel(`today-att-${Math.random().toString(36).slice(2)}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'attendance' }, () => void load())
-      .subscribe()
-    return () => void supabase.removeChannel(ch)
+    return onTableChange('attendance', () => void load())
   }, [])
   return count
 }
