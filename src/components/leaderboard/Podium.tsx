@@ -1,0 +1,102 @@
+import { motion } from 'motion/react'
+import { Crown, Medal } from 'lucide-react'
+import type { Member } from '../../lib/types'
+import { useData } from '../../context/DataContext'
+import { cn, initials, num } from '../../lib/format'
+
+const PLACES = [
+  { place: 2, height: 'h-28 sm:h-36', ring: 'from-slate-200 via-slate-100 to-slate-300', label: 'الفضي', medal: '#9aa4b2', order: 'order-1' },
+  { place: 1, height: 'h-36 sm:h-48', ring: 'from-gold-200 via-gold-100 to-gold-400', label: 'الذهبي', medal: '#c9a24b', order: 'order-2' },
+  { place: 3, height: 'h-20 sm:h-28', ring: 'from-orange-200 via-orange-100 to-orange-300', label: 'البرونزي', medal: '#b87333', order: 'order-3' },
+]
+
+export function Podium({ members, frozen, dark }: { members: Member[]; frozen?: boolean; dark?: boolean }) {
+  const { groupsById } = useData()
+  const top = members.slice(0, 3)
+
+  return (
+    <div className="flex items-end justify-center gap-2 sm:gap-5">
+      {PLACES.map((p, idx) => {
+        const m = top[p.place - 1]
+        const group = m?.group_id ? groupsById.get(m.group_id) : null
+        return (
+          <motion.div
+            key={p.place}
+            className={cn('flex w-[31%] max-w-[210px] flex-col items-center', p.order)}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 + idx * 0.12, type: 'spring', damping: 18 }}
+          >
+            {m ? (
+              <>
+                <div className="relative mb-3">
+                  {p.place === 1 && (
+                    <motion.div
+                      className="absolute -top-7 left-1/2 -translate-x-1/2 text-gold-400"
+                      animate={{ y: [0, -4, 0], rotate: [0, -4, 4, 0] }}
+                      transition={{ repeat: Infinity, duration: 3 }}
+                    >
+                      <Crown className="h-8 w-8 drop-shadow-[0_4px_8px_rgba(201,162,75,0.6)]" fill="currentColor" />
+                    </motion.div>
+                  )}
+                  <div
+                    className={cn(
+                      'rounded-full bg-gradient-to-br p-[3px]',
+                      p.ring,
+                      p.place === 1 && 'animate-[pulse-ring_2.2s_ease-out_infinite]',
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        'grid place-items-center rounded-full font-bold text-white',
+                        p.place === 1 ? 'h-20 w-20 text-2xl sm:h-24 sm:w-24 sm:text-3xl' : 'h-16 w-16 text-xl sm:h-20 sm:w-20 sm:text-2xl',
+                      )}
+                      style={{ background: `linear-gradient(145deg, ${group?.color ?? '#0F4C3A'}, ${group?.color ?? '#0F4C3A'}cc)` }}
+                    >
+                      {initials(m.name)}
+                    </div>
+                  </div>
+                  <span
+                    className="absolute -bottom-1 left-1/2 grid h-7 w-7 -translate-x-1/2 place-items-center rounded-full text-xs font-bold text-white shadow-md ring-2 ring-white"
+                    style={{ backgroundColor: p.medal }}
+                  >
+                    {p.place}
+                  </span>
+                </div>
+                <div className={cn('line-clamp-2 min-h-[2.5em] text-center text-sm font-semibold leading-tight sm:text-base', dark ? 'text-white' : 'text-ink')}>
+                  {m.name}
+                </div>
+                {group && (
+                  <div className={cn('mt-0.5 text-xs', dark ? 'text-white/60' : 'text-muted')}>{group.name}</div>
+                )}
+              </>
+            ) : (
+              <div className="mb-3 grid h-16 w-16 place-items-center rounded-full border-2 border-dashed border-line text-muted">
+                <Medal className="h-6 w-6" />
+              </div>
+            )}
+            <div
+              className={cn(
+                'relative mt-3 flex w-full flex-col items-center justify-start overflow-hidden rounded-t-2xl pt-3',
+                p.height,
+                p.place === 1
+                  ? 'bg-gradient-to-b from-gold-300 via-gold-400 to-gold-500 shadow-[var(--shadow-gold)]'
+                  : dark ? 'bg-gradient-to-b from-white/20 to-white/5' : 'bg-gradient-to-b from-primary-600 to-primary-800',
+              )}
+            >
+              <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent 0 10px, rgba(255,255,255,.25) 10px 11px)' }} />
+              {m && !frozen && (
+                <span className={cn('tabular relative text-xl font-bold sm:text-2xl', p.place === 1 ? 'text-primary-900' : 'text-white')}>
+                  {num(m.points)}
+                </span>
+              )}
+              <span className={cn('relative text-[11px] font-medium', p.place === 1 ? 'text-primary-900/70' : 'text-white/70')}>
+                {frozen ? '؟؟' : 'نقطة'}
+              </span>
+            </div>
+          </motion.div>
+        )
+      })}
+    </div>
+  )
+}
