@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { motion } from 'motion/react'
 import {
   Award, BookOpen, CalendarCheck, Crown, Flame, Gem, Heart, Lightbulb, Medal, Mic, PenTool, Rocket,
   Shield, Sparkles, Star, Target, Trophy, Users, Zap, type LucideIcon,
@@ -65,24 +64,20 @@ export function EmptyState({ icon, title, children }: { icon?: ReactNode; title:
 
 export function PageHeader({ title, subtitle, icon, actions }: { title: ReactNode; subtitle?: ReactNode; icon?: ReactNode; actions?: ReactNode }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
-    >
-      <div className="flex items-center gap-3.5">
+    <div className="mb-6 flex items-center justify-between gap-3 sm:mb-8">
+      <div className="flex min-w-0 items-center gap-3">
         {icon && (
-          <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-primary-600 to-primary-800 text-gold-200 shadow-[var(--shadow-lift)]">
+          <div className="hidden h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary-700 text-gold-200 sm:grid [&_svg]:h-5 [&_svg]:w-5">
             {icon}
           </div>
         )}
-        <div>
-          <h1 className="text-[22px] font-bold tracking-tight sm:text-[28px]">{title}</h1>
-          {subtitle && <p className="mt-1 text-sm text-muted sm:text-[15px]">{subtitle}</p>}
+        <div className="min-w-0">
+          <h1 className="truncate text-xl font-bold tracking-tight sm:text-2xl">{title}</h1>
+          {subtitle && <p className="mt-0.5 truncate text-sm text-muted">{subtitle}</p>}
         </div>
       </div>
-      {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
-    </motion.div>
+      {actions && <div className="flex shrink-0 gap-2">{actions}</div>}
+    </div>
   )
 }
 
@@ -115,10 +110,10 @@ export function CardsIndicator({ yellow, red }: { yellow: number; red: number })
   return (
     <span className="inline-flex items-center gap-1">
       {Array.from({ length: yellow }).map((_, i) => (
-        <span key={`y${i}`} className="h-4 w-3 rounded-[3px] bg-yellow-400 shadow-sm ring-1 ring-yellow-500/40" title="كرت أصفر" />
+        <span key={`y${i}`} className="h-3.5 w-2.5 rounded-[2px] bg-yellow-400" title="كرت أصفر" />
       ))}
       {Array.from({ length: red }).map((_, i) => (
-        <span key={`r${i}`} className="h-4 w-3 rounded-[3px] bg-red-600 shadow-sm ring-1 ring-red-700/40" title="كرت أحمر" />
+        <span key={`r${i}`} className="h-3.5 w-2.5 rounded-[2px] bg-red-600" title="كرت أحمر" />
       ))}
     </span>
   )
@@ -126,14 +121,13 @@ export function CardsIndicator({ yellow, red }: { yellow: number; red: number })
 
 export function StatCard({ label, value, icon, accent = '#0F4C3A', sub }: { label: string; value: ReactNode; icon?: ReactNode; accent?: string; sub?: ReactNode }) {
   return (
-    <div className="card relative overflow-hidden p-5">
-      <div className="absolute -left-6 -top-6 h-20 w-20 rounded-full opacity-10" style={{ backgroundColor: accent }} />
-      <div className="flex items-center justify-between">
-        <span className="text-sm text-muted">{label}</span>
-        {icon && <span style={{ color: accent }}>{icon}</span>}
+    <div className="card p-4">
+      <div className="flex items-center justify-between text-muted">
+        <span className="text-[13px]">{label}</span>
+        {icon && <span className="opacity-70 [&_svg]:h-4 [&_svg]:w-4">{icon}</span>}
       </div>
-      <div className="tabular mt-2 text-3xl font-bold" style={{ color: accent }}>{value}</div>
-      {sub && <div className="mt-1 text-xs text-muted">{sub}</div>}
+      <div className="tabular mt-1.5 text-2xl font-bold" style={{ color: accent }}>{value}</div>
+      {sub && <div className="mt-0.5 text-xs text-muted">{sub}</div>}
     </div>
   )
 }

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { BookOpenText } from 'lucide-react'
 import { useData } from '../context/DataContext'
 import { BadgeMedal, PageHeader, PageLoader } from '../components/ui/misc'
 import { cn, signed } from '../lib/format'
@@ -30,14 +29,14 @@ export default function Rules() {
   const tabs: [Tab, string][] = [['earn', 'كسب النقاط'], ['lose', 'المخالفات'], ['badges', 'الأوسمة']]
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
-      <PageHeader icon={<BookOpenText className="h-6 w-6" />} title="لائحة النقاط" />
+    <div className="mx-auto max-w-2xl px-4 py-5 sm:px-6 sm:py-8">
+      <PageHeader title="لائحة النقاط" />
 
-      <div className="mb-8 grid grid-cols-3 gap-1 rounded-2xl bg-sand/80 p-1.5">
+      <div className="mb-5 grid grid-cols-3 gap-1 rounded-xl bg-sand/80 p-1">
         {tabs.map(([k, l]) => (
           <button key={k} onClick={() => setTab(k)}
-            className={cn('relative cursor-pointer rounded-xl py-3 text-sm font-semibold transition sm:text-base', tab === k ? 'text-primary-800' : 'text-muted hover:text-ink')}>
-            {tab === k && <motion.span layoutId="rules-tab" className="absolute inset-0 rounded-xl bg-white shadow-[var(--shadow-soft)]" transition={{ type: 'spring', damping: 26, stiffness: 300 }} />}
+            className={cn('relative cursor-pointer rounded-lg py-2 text-sm font-medium transition', tab === k ? 'text-primary-800' : 'text-muted hover:text-ink')}>
+            {tab === k && <motion.span layoutId="rules-tab" className="absolute inset-0 rounded-lg bg-white shadow-sm" transition={{ type: 'spring', damping: 26, stiffness: 300 }} />}
             <span className="relative">{l}</span>
           </button>
         ))}
@@ -54,15 +53,15 @@ export default function Rules() {
           )}
           {tab === 'badges' && (
             badges.length === 0 ? <Empty /> : (
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-3 sm:grid-cols-2">
                 {badges.map((b) => (
-                  <div key={b.id} className="card flex items-center gap-5 p-6">
-                    <BadgeMedal icon={b.icon} color={b.color} size={60} />
+                  <div key={b.id} className="card flex items-center gap-4 p-4">
+                    <BadgeMedal icon={b.icon} color={b.color} size={44} />
                     <div className="min-w-0 flex-1">
-                      <div className="text-lg font-bold">{b.name}</div>
-                      {b.description && <p className="mt-1 text-sm leading-relaxed text-muted">{b.description}</p>}
+                      <div className="font-semibold">{b.name}</div>
+                      {b.description && <p className="mt-0.5 text-[13px] text-muted">{b.description}</p>}
                     </div>
-                    {b.points !== 0 && <span className="tabular text-xl font-bold text-gold-500">{signed(b.points)}</span>}
+                    {b.points !== 0 && <span className="tabular font-semibold text-gold-500">{signed(b.points)}</span>}
                   </div>
                 ))}
               </div>
@@ -79,12 +78,12 @@ function RuleList({ rows, positive }: { rows: Row[]; positive?: boolean }) {
   return (
     <div className="card overflow-hidden">
       {rows.map((r, i) => (
-        <div key={r.id} className={cn('flex items-center gap-5 px-6 py-5', i > 0 && 'border-t border-line/50')}>
+        <div key={r.id} className={cn('flex items-center gap-4 px-4 py-3.5 sm:px-5', i > 0 && 'border-t border-line/50')}>
           <div className="min-w-0 flex-1">
-            <div className="text-[17px] font-semibold">{r.title}</div>
-            {r.description && <div className="mt-1 text-sm text-muted">{r.description}</div>}
+            <div className="text-[15px] font-medium">{r.title}</div>
+            {r.description && <div className="mt-0.5 text-[13px] text-muted">{r.description}</div>}
           </div>
-          <span className={cn('tabular grid h-14 w-16 shrink-0 place-items-center rounded-2xl text-xl font-bold',
+          <span className={cn('tabular shrink-0 rounded-lg px-2.5 py-1 text-[15px] font-semibold',
             positive ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700')}>
             {signed(r.value)}
           </span>
@@ -96,19 +95,19 @@ function RuleList({ rows, positive }: { rows: Row[]; positive?: boolean }) {
 
 function CardsInfo({ yellow, red, excludes }: { yellow: number; red: number; excludes: boolean }) {
   return (
-    <div className="mt-8 grid gap-4 sm:grid-cols-2">
-      <div className="card flex items-center gap-5 p-6">
-        <span className="h-14 w-10 shrink-0 rounded-lg bg-yellow-400 shadow-md ring-1 ring-yellow-500/40" />
+    <div className="mt-4 grid gap-3 sm:grid-cols-2">
+      <div className="card flex items-center gap-4 p-4">
+        <span className="h-9 w-6 shrink-0 rounded-md bg-yellow-400" />
         <div>
-          <div className="text-lg font-bold">كرت أصفر</div>
-          <div className="mt-1 text-sm text-muted">الثاني يتحول إلى أحمر{yellow ? ` · ${signed(-yellow)}` : ''}</div>
+          <div className="font-semibold">كرت أصفر</div>
+          <div className="mt-0.5 text-[13px] text-muted">الثاني يتحول إلى أحمر{yellow ? ` · ${signed(-yellow)}` : ''}</div>
         </div>
       </div>
-      <div className="card flex items-center gap-5 p-6">
-        <span className="h-14 w-10 shrink-0 rounded-lg bg-red-600 shadow-md ring-1 ring-red-700/40" />
+      <div className="card flex items-center gap-4 p-4">
+        <span className="h-9 w-6 shrink-0 rounded-md bg-red-600" />
         <div>
-          <div className="text-lg font-bold">كرت أحمر</div>
-          <div className="mt-1 text-sm text-muted">{excludes ? 'إقصاء من المنافسة' : 'مخالفة جسيمة'}{red ? ` · ${signed(-red)}` : ''}</div>
+          <div className="font-semibold">كرت أحمر</div>
+          <div className="mt-0.5 text-[13px] text-muted">{excludes ? 'إقصاء من المنافسة' : 'مخالفة جسيمة'}{red ? ` · ${signed(-red)}` : ''}</div>
         </div>
       </div>
     </div>

@@ -5,7 +5,7 @@ import { useData } from '../../context/DataContext'
 import { formatHijri, formatTime } from '../../lib/hijri'
 import { cn, signed } from '../../lib/format'
 import { Button } from '../ui/Button'
-import { EmptyState, GroupDot, Skeleton } from '../ui/misc'
+import { EmptyState, Skeleton } from '../ui/misc'
 
 export const LOG_TYPES: Record<LogType, { label: string; icon: typeof Sparkles; color: string; bg: string }> = {
   points: { label: 'نقاط', icon: Sparkles, color: 'text-primary-700', bg: 'bg-primary-50' },
@@ -55,14 +55,11 @@ export function LogList({ items, loading, hasMore, loadingMore, onLoadMore, onUn
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {groups.map((g) => (
         <div key={g.day}>
-          <div className="sticky top-16 z-10 mb-2 flex items-center gap-3">
-            <span className="rounded-full border border-gold-200 bg-gold-50/95 px-3 py-1 text-xs font-semibold text-gold-600 backdrop-blur">{g.day}</span>
-            <span className="gold-divider flex-1" />
-          </div>
-          <ul className="space-y-2">
+          <div className="mb-2 px-1 text-xs font-medium text-muted">{g.day}</div>
+          <ul className="card divide-y divide-line/50 overflow-hidden">
             <AnimatePresence initial={false}>
               {g.items.map((l) => {
                 const t = LOG_TYPES[l.type] ?? LOG_TYPES.points
@@ -73,56 +70,39 @@ export function LogList({ items, loading, hasMore, loadingMore, onLoadMore, onUn
                 return (
                   <motion.li
                     key={l.id}
-                    layout
-                    initial={{ opacity: 0, y: -8, backgroundColor: 'rgba(201,162,75,0.18)' }}
-                    animate={{ opacity: 1, y: 0, backgroundColor: 'rgba(255,255,255,0.92)' }}
-                    transition={{ duration: 0.5 }}
-                    className={cn(
-                      'flex items-center gap-3 rounded-2xl border border-line/70 px-3.5 shadow-[var(--shadow-soft)]',
-                      compact ? 'py-2.5' : 'py-3',
-                      reverted && 'opacity-55',
-                    )}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: reverted ? 0.5 : 1 }}
+                    className={cn('flex items-center gap-3 px-4', compact ? 'py-2.5' : 'py-3')}
                   >
-                    <span className={cn('relative grid h-10 w-10 shrink-0 place-items-center rounded-xl', t.bg, t.color)}>
-                      {cardColor ? <span className={cn('h-5 w-3.5 rounded-[3px] shadow', cardColor)} /> : <Icon className="h-5 w-5" />}
+                    <span className={cn('grid h-8 w-8 shrink-0 place-items-center rounded-lg', t.bg, t.color)}>
+                      {cardColor ? <span className={cn('h-4 w-3 rounded-[2px]', cardColor)} /> : <Icon className="h-4 w-4" />}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                        {showMember && l.member_name && <span className="font-semibold">{l.member_name}</span>}
-                        {showMember && group && (
-                          <span className="inline-flex items-center gap-1 text-xs text-muted">
-                            <GroupDot color={group.color} className="h-2 w-2" />
-                            {group.name}
-                          </span>
-                        )}
-                      </div>
-                      <div className={cn(l.member_name ? 'text-sm text-ink/80' : 'font-semibold', reverted && 'line-through')}>{l.title}</div>
-                      <div className="mt-0.5 flex flex-wrap items-center gap-x-2 text-[11px] text-muted">
-                        <span>{formatTime(l.ts)}</span>
-                        {l.admin_name && <span>• بواسطة {l.admin_name}</span>}
-                        {reverted && <span className="font-medium text-rose-600">• تم التراجع{l.reverted_by ? ` (${l.reverted_by})` : ''}</span>}
+                      {showMember && l.member_name ? (
+                        <>
+                          <div className="flex items-center gap-1.5 text-[15px]">
+                            <span className="truncate font-medium">{l.member_name}</span>
+                            {group && <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: group.color }} />}
+                          </div>
+                          <div className={cn('truncate text-[13px] text-muted', reverted && 'line-through')}>{l.title}</div>
+                        </>
+                      ) : (
+                        <div className={cn('truncate text-[15px]', !l.member_name && 'font-medium', reverted && 'line-through')}>{l.title}</div>
+                      )}
+                      <div className="mt-0.5 truncate text-[11px] text-muted/80">
+                        {formatTime(l.ts)}
+                        {l.admin_name && ` · ${l.admin_name}`}
+                        {reverted && ' · أُلغي'}
                       </div>
                     </div>
                     {l.delta !== 0 && (
-                      <span
-                        className={cn(
-                          'tabular shrink-0 rounded-xl px-2.5 py-1 text-sm font-bold',
-                          l.delta > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700',
-                        )}
-                      >
+                      <span className={cn('tabular shrink-0 text-[15px] font-semibold', l.delta > 0 ? 'text-emerald-600' : 'text-red-600')}>
                         {signed(l.delta)}
                       </span>
                     )}
                     {onUndo && !reverted && l.type !== 'undo' && l.inverse && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-9 w-9 text-rose-600 hover:bg-rose-50 hover:text-rose-700"
-                        title="تراجع"
-                        loading={undoingId === l.id}
-                        onClick={() => onUndo(l)}
-                        icon={<Undo2 className="h-4 w-4" />}
-                      />
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted hover:bg-rose-50 hover:text-rose-600" title="تراجع"
+                        loading={undoingId === l.id} onClick={() => onUndo(l)} icon={<Undo2 className="h-4 w-4" />} />
                     )}
                   </motion.li>
                 )
@@ -133,7 +113,7 @@ export function LogList({ items, loading, hasMore, loadingMore, onLoadMore, onUn
       ))}
       {hasMore && (
         <div className="flex justify-center pt-2">
-          <Button variant="outline" onClick={onLoadMore} loading={loadingMore} icon={<ChevronDown className="h-4 w-4" />}>
+          <Button variant="ghost" onClick={onLoadMore} loading={loadingMore} icon={<ChevronDown className="h-4 w-4" />}>
             إظهار المزيد
           </Button>
         </div>

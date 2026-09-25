@@ -108,15 +108,15 @@ export default function Attendance() {
   if (!started) {
     return (
       <div>
-        <PageHeader icon={<ScanQrCode className="h-6 w-6" />} title="التحضير السريع" />
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="islamic-pattern-dark relative mx-auto max-w-xl overflow-hidden rounded-[2rem] p-10 text-center text-white shadow-[var(--shadow-lift)]">
-          <div className="mx-auto mb-6 grid h-24 w-24 place-items-center rounded-3xl bg-gradient-to-br from-gold-200 to-gold-400 text-primary-900 shadow-xl">
-            <ScanQrCode className="h-12 w-12" />
+        <PageHeader title="التحضير" />
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="islamic-pattern-dark relative mx-auto max-w-md overflow-hidden rounded-3xl p-6 text-center text-white sm:p-8">
+          <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-gold-300 text-primary-900">
+            <ScanQrCode className="h-7 w-7" />
           </div>
-          <div className="text-white/70">{formatWeekday(new Date())} · {formatHijri(new Date())}</div>
-          <div className="mt-6 grid grid-cols-2 gap-3 text-sm">
-            <div className="rounded-2xl bg-white/10 p-4"><div className="tabular text-3xl font-bold text-gold-200">+{num(settings?.attendance_points ?? 25)}</div><div className="mt-1 text-white/70">نقاط الحضور</div></div>
-            <div className="rounded-2xl bg-white/10 p-4"><div className="tabular text-3xl font-bold">{num(today)}</div><div className="mt-1 text-white/70">حضروا اليوم</div></div>
+          <div className="text-sm text-white/65">{formatWeekday(new Date())} · {formatHijri(new Date())}</div>
+          <div className="mt-5 grid grid-cols-2 gap-2.5 text-sm">
+            <div className="rounded-xl bg-white/[0.08] p-3"><div className="tabular text-2xl font-bold text-gold-200">+{num(settings?.attendance_points ?? 25)}</div><div className="mt-1 text-white/70">نقاط الحضور</div></div>
+            <div className="rounded-xl bg-white/[0.08] p-3"><div className="tabular text-2xl font-bold">{num(today)}</div><div className="mt-1 text-white/70">حضروا اليوم</div></div>
           </div>
           {todayOff && (
             <div className="mt-6 flex items-center justify-center gap-2 rounded-2xl bg-white/10 px-4 py-3 text-gold-100">
@@ -124,7 +124,7 @@ export default function Attendance() {
             </div>
           )}
           {settings?.late_after && <div className="mt-4 text-sm text-white/70">يُحتسب التأخر تلقائياً بعد الساعة {settings.late_after.slice(0, 5)} (+{num(settings.late_points)})</div>}
-          <Button variant="gold" size="lg" className="mt-8 w-full" icon={<Play className="h-5 w-5" />} onClick={() => { unlockAudio(); setStarted(true) }}>
+          <Button variant="gold" size="lg" className="mt-6 w-full" icon={<Play className="h-5 w-5" />} onClick={() => { unlockAudio(); setStarted(true) }}>
             بدء التحضير
           </Button>
         </motion.div>
@@ -137,13 +137,13 @@ export default function Attendance() {
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <span className="relative flex h-3 w-3"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" /><span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-500" /></span>
-          <h1 className="text-xl font-bold">التحضير جارٍ</h1>
-          <span className="tabular rounded-full bg-primary-50 px-3 py-1 text-sm font-semibold text-primary-700">{num(today)} حاضر اليوم</span>
+          <h1 className="text-lg font-bold">التحضير جارٍ</h1>
+          <span className="tabular rounded-full bg-primary-50 px-2.5 py-0.5 text-[13px] font-medium text-primary-700">{num(today)} حاضر</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex rounded-xl border border-line bg-white p-1 text-sm">
+          <div className="flex rounded-lg border border-line bg-white p-0.5">
             {([['auto', 'تلقائي'], ['present', 'حاضر'], ['late', 'متأخر']] as const).map(([k, l]) => (
-              <button key={k} onClick={() => setLateMode(k)} className={cn('cursor-pointer rounded-lg px-3 py-1.5 font-medium transition', lateMode === k ? (k === 'late' ? 'bg-amber-500 text-white' : 'bg-primary-700 text-white') : 'text-muted')}>{l}</button>
+              <button key={k} onClick={() => setLateMode(k)} className={cn('cursor-pointer rounded-md px-2.5 h-7 text-[13px] transition', lateMode === k ? (k === 'late' ? 'bg-amber-500 text-white' : 'bg-primary-700 text-white') : 'text-muted')}>{l}</button>
             ))}
           </div>
           <Button variant="outline" size="icon" onClick={() => setMuted(!muted)} icon={muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />} title="الصوت" />
@@ -156,16 +156,16 @@ export default function Attendance() {
           <Scanner onScan={(t) => void handle(t)} paused={!!overlay} repeatDelay={2500} className="mx-auto max-w-[560px] shadow-[var(--shadow-lift)]" />
           <form onSubmit={(e) => { e.preventDefault(); void handle(manual); setManual('') }} className="mx-auto mt-4 flex max-w-[560px] gap-2">
             <div className="relative flex-1">
-              <Keyboard className="pointer-events-none absolute right-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-muted" />
-              <input value={manual} onChange={(e) => setManual(e.target.value)} placeholder="أو أدخل رقم العضوية يدوياً" inputMode="numeric" className="field h-12 pr-11" />
+              <Keyboard className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+              <input value={manual} onChange={(e) => setManual(e.target.value)} placeholder="رقم العضوية" inputMode="numeric" className="field h-11 pr-9" />
             </div>
-            <Button type="submit" className="h-12" disabled={!manual.trim()}>تحضير</Button>
+            <Button type="submit" className="h-11" disabled={!manual.trim()}>تحضير</Button>
           </form>
         </div>
 
-        <aside className="card flex max-h-[70vh] flex-col overflow-hidden">
+        <aside className="card flex max-h-[60vh] flex-col overflow-hidden">
           <div className="flex items-center justify-between border-b border-line/60 px-5 py-3.5">
-            <span className="font-semibold">حُضّروا في هذه الجلسة</span>
+            <span className="text-sm font-semibold">هذه الجلسة</span>
             <span className="tabular rounded-full bg-sand px-2.5 py-0.5 text-sm">{num(recent.filter((r) => !r.undone).length)}</span>
           </div>
           <ul className="scrollbar-thin flex-1 divide-y divide-line/50 overflow-y-auto">

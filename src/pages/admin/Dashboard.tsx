@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'motion/react'
-import { BarChart3, CalendarCheck, CreditCard, LayoutDashboard, ScanLine, ScanQrCode, ShieldAlert, Sparkles, Users } from 'lucide-react'
+import { BarChart3, CalendarCheck, CreditCard, ScanLine, ScanQrCode, ShieldAlert, Sparkles, Users } from 'lucide-react'
 import { useData } from '../../context/DataContext'
 import { useAuth } from '../../context/AuthContext'
 import { supabase } from '../../lib/supabase'
@@ -49,9 +49,9 @@ export default function Dashboard() {
 
   return (
     <div>
-      <PageHeader icon={<LayoutDashboard className="h-6 w-6" />} title={`أهلاً، ${admin?.display_name ?? ''}`} subtitle={`${formatWeekday(new Date())} · ${formatHijri(new Date())}`} />
+      <PageHeader title={`أهلاً، ${admin?.display_name ?? ''}`} subtitle={`${formatWeekday(new Date())} · ${formatHijri(new Date())}`} />
 
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatCard label="الأعضاء النشطون" value={num(active)} icon={<Users className="h-5 w-5" />} sub={`من أصل ${num(members.length)}`} />
         <StatCard label="حضور اليوم" value={num(today)} icon={<CalendarCheck className="h-5 w-5" />} accent="#1F5A96" sub={active ? `${Math.round((today / active) * 100)}% من الأعضاء` : undefined} />
         <StatCard label="مجموع النقاط" value={num(total)} icon={<Sparkles className="h-5 w-5" />} accent="#B08637" />
@@ -81,11 +81,11 @@ export default function Dashboard() {
 
       <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_360px]">
         <section>
-          <h2 className="mb-4 text-lg font-bold">ترتيب المجموعات</h2>
+          <h2 className="mb-3 text-lg font-bold">المجموعات</h2>
           <GroupStandings groups={groupStats} />
         </section>
         <aside>
-          <LiveList limit={10} />
+          <LiveList limit={8} />
         </aside>
       </div>
     </div>

@@ -7,19 +7,19 @@ type Size = 'sm' | 'md' | 'lg' | 'icon'
 
 const variants: Record<Variant, string> = {
   primary:
-    'bg-gradient-to-b from-primary-600 to-primary-700 text-white shadow-[0_6px_16px_-6px_rgb(15_76_58/0.6)] hover:from-primary-500 hover:to-primary-700',
-  gold: 'bg-gradient-to-b from-gold-300 to-gold-500 text-primary-900 shadow-[0_6px_16px_-6px_rgb(176_134_55/0.7)] hover:from-gold-200 hover:to-gold-400',
+    'bg-primary-700 text-white hover:bg-primary-600',
+  gold: 'bg-gold-400 text-primary-900 hover:bg-gold-300',
   outline: 'border border-line bg-white text-ink hover:border-primary-300 hover:bg-primary-50',
   ghost: 'text-ink/80 hover:bg-primary-50 hover:text-primary-700',
-  danger: 'bg-gradient-to-b from-red-600 to-red-700 text-white shadow-[0_6px_16px_-6px_rgb(180_35_53/0.6)] hover:from-red-500',
+  danger: 'bg-red-600 text-white hover:bg-red-500',
   subtle: 'bg-primary-50 text-primary-700 hover:bg-primary-100',
-  white: 'bg-white/10 text-white border border-white/20 hover:bg-white/20 backdrop-blur',
+  white: 'bg-white/10 text-white border border-white/20 hover:bg-white/20',
 }
 const sizes: Record<Size, string> = {
-  sm: 'h-9 px-3.5 text-sm gap-1.5 rounded-xl',
-  md: 'h-11 px-5 text-[15px] gap-2 rounded-xl',
-  lg: 'h-14 px-7 text-lg gap-2.5 rounded-2xl',
-  icon: 'h-10 w-10 rounded-xl',
+  sm: 'h-8 px-3 text-[13px] gap-1.5 rounded-lg',
+  md: 'h-10 px-4 text-sm gap-2 rounded-xl',
+  lg: 'h-12 px-6 text-[15px] gap-2 rounded-xl',
+  icon: 'h-9 w-9 rounded-lg',
 }
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

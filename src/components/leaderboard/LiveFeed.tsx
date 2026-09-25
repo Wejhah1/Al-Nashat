@@ -1,4 +1,3 @@
-import { Radio } from 'lucide-react'
 import { useLogs } from '../../hooks/useLogs'
 import { useData } from '../../context/DataContext'
 import { cn, signed } from '../../lib/format'
@@ -11,11 +10,11 @@ export function LiveTicker({ dark }: { dark?: boolean }) {
   const list = items.filter((l) => !l.reverted_at && l.type !== 'undo' && l.type !== 'edit')
   if (!list.length) return null
   const row = (
-    <div className="flex shrink-0 items-center gap-8 px-4">
+    <div className="flex shrink-0 items-center gap-7 px-4">
       {list.map((l) => {
         const g = l.group_id ? groupsById.get(l.group_id) : null
         return (
-          <span key={l.id} className="inline-flex items-center gap-2 whitespace-nowrap text-sm">
+          <span key={l.id} className="inline-flex items-center gap-1.5 whitespace-nowrap text-[13px]">
             <span className="h-2 w-2 rounded-full" style={{ backgroundColor: g?.color ?? '#c9a24b' }} />
             <span className="font-semibold">{l.member_name}</span>
             <span className={dark ? 'text-white/70' : 'text-muted'}>{l.title}</span>
@@ -24,23 +23,18 @@ export function LiveTicker({ dark }: { dark?: boolean }) {
                 {signed(l.delta)}
               </span>
             )}
-            <span className="text-gold-400">✦</span>
           </span>
         )
       })}
     </div>
   )
   return (
-    <div className={cn('relative flex items-center overflow-hidden rounded-2xl border', dark ? 'border-white/10 bg-white/5 text-white' : 'border-line/70 bg-white/80 shadow-[var(--shadow-soft)] backdrop-blur')}>
-      <div className={cn('z-10 flex shrink-0 items-center gap-2 px-4 py-3 text-sm font-semibold', dark ? 'bg-primary-900 text-gold-200' : 'bg-primary-700 text-gold-100')}>
-        <span className="relative flex h-2.5 w-2.5">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
-          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
-        </span>
-        <Radio className="h-4 w-4" />
+    <div className={cn('relative flex items-center overflow-hidden rounded-xl border', dark ? 'border-white/10 bg-white/5 text-white' : 'border-line/60 bg-white')}>
+      <div className={cn('z-10 flex shrink-0 items-center gap-1.5 px-3 py-2.5 text-xs font-semibold', dark ? 'text-gold-200' : 'text-red-600')}>
+        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-red-500" />
         مباشر
       </div>
-      <div className="relative flex-1 overflow-hidden py-3" style={{ maskImage: 'linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent)' }}>
+      <div className="relative flex-1 overflow-hidden py-2.5" style={{ maskImage: 'linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent)' }}>
         <div className="marquee-track flex w-max">
           {row}
           {row}
@@ -56,12 +50,9 @@ export function LiveList({ limit = 8 }: { limit?: number }) {
   const { groupsById } = useData()
   return (
     <div className="card p-5">
-      <div className="mb-4 flex items-center gap-2 font-semibold">
-        <span className="relative flex h-2.5 w-2.5">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
-          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
-        </span>
-        آخر الأحداث الحية
+      <div className="mb-4 flex items-center gap-2 text-sm font-semibold">
+        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-red-500" />
+        آخر الأحداث
       </div>
       {loading ? (
         <div className="py-6 text-center text-sm text-muted">جاري التحميل…</div>

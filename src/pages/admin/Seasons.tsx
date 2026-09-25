@@ -100,21 +100,21 @@ function CurrentSeason({ season, holidays, onEdit }: { season: Season; holidays:
   const pct = total ? Math.min(100, Math.round((done / total) * 100)) : 0
 
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="islamic-pattern-dark overflow-hidden rounded-3xl p-6 text-white shadow-[var(--shadow-lift)] sm:p-8">
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="islamic-pattern-dark overflow-hidden rounded-2xl p-5 text-white sm:p-7">
       <div className="flex items-start justify-between gap-4">
         <div>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-400/20 px-3 py-1 text-xs font-medium text-emerald-200">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />الموسم الحالي
           </span>
-          <h2 className="mt-3 text-2xl font-bold sm:text-3xl">{season.name}</h2>
+          <h2 className="mt-2.5 text-xl font-bold sm:text-2xl">{season.name}</h2>
           <p className="mt-1.5 text-sm text-white/70">{formatHijri(season.start_date)} — {formatHijri(season.end_date)}</p>
         </div>
         <Button variant="white" size="icon" onClick={onEdit} icon={<PenLine className="h-4 w-4" />} />
       </div>
-      <div className="mt-8 grid grid-cols-2 gap-3 text-center">
+      <div className="mt-5 grid grid-cols-2 gap-2.5 text-center">
         {[[num(done), 'يوم نشاط مضى'], [num(total - done), 'يوم نشاط متبقٍ']].map(([v, l]) => (
-          <div key={l} className="rounded-2xl bg-white/[0.08] py-4">
-            <div className="tabular text-2xl font-bold text-gold-200 sm:text-3xl">{v}</div>
+          <div key={l} className="rounded-xl bg-white/[0.08] py-3">
+            <div className="tabular text-xl font-bold text-gold-200 sm:text-2xl">{v}</div>
             <div className="mt-1 text-xs text-white/60">{l}</div>
           </div>
         ))}

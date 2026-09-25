@@ -107,9 +107,9 @@ export function MemberPanel({ memberId, onClose }: { memberId: string; onClose?:
   return (
     <div className="space-y-4">
       {/* بطاقة العضو */}
-      <motion.div layout className="relative overflow-hidden rounded-3xl text-white shadow-[var(--shadow-lift)]" style={{ background: `linear-gradient(135deg, ${color}, #0B3B2D)` }}>
+      <motion.div layout className="relative overflow-hidden rounded-2xl text-white" style={{ background: `linear-gradient(135deg, ${color}, #0B3B2D)` }}>
         <div className="islamic-pattern-dark absolute inset-0 opacity-40 mix-blend-overlay" />
-        <div className="relative p-5 sm:p-6">
+        <div className="relative p-4 sm:p-5">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
               {editing ? (
@@ -121,7 +121,7 @@ export function MemberPanel({ memberId, onClose }: { memberId: string; onClose?:
                 </div>
               ) : (
                 <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-2xl font-bold">{m.name}</h2>
+                  <h2 className="text-lg font-bold sm:text-xl">{m.name}</h2>
                   <button onClick={() => { setName(m.name); setEditing(true) }} className="grid h-8 w-8 cursor-pointer place-items-center rounded-lg bg-white/10 hover:bg-white/20" title="تعديل الاسم">
                     <PenLine className="h-4 w-4" />
                   </button>
@@ -136,7 +136,7 @@ export function MemberPanel({ memberId, onClose }: { memberId: string; onClose?:
               </div>
             </div>
             <div className="text-center">
-              <motion.div key={m.points} initial={{ scale: 1.3 }} animate={{ scale: 1 }} className="tabular text-4xl font-bold text-gold-200">{num(m.points)}</motion.div>
+              <motion.div key={m.points} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className="tabular text-3xl font-bold text-gold-200">{num(m.points)}</motion.div>
               <div className="text-xs text-white/70">نقطة</div>
             </div>
             {onClose && (
@@ -159,13 +159,13 @@ export function MemberPanel({ memberId, onClose }: { memberId: string; onClose?:
       </AnimatePresence>
 
       {/* نقاط مخصصة */}
-      <div className="card p-4 sm:p-5">
-        <div className="mb-3 text-sm font-semibold text-ink/80">نقاط مخصصة</div>
+      <div className="card p-4">
+        <div className="mb-2.5 text-[13px] font-medium text-muted">نقاط مخصصة</div>
         <div className="flex gap-2">
-          <Button variant="danger" size="icon" className="h-12 w-12" loading={busy?.startsWith('p-')} onClick={() => void customPoints(-1)} icon={<Minus className="h-5 w-5" />} />
+          <Button variant="danger" size="icon" className="h-11 w-11" loading={busy?.startsWith('p-')} onClick={() => void customPoints(-1)} icon={<Minus className="h-5 w-5" />} />
           <input value={custom} onChange={(e) => setCustom(e.target.value.replace(/\D/g, ''))} inputMode="numeric" placeholder="القيمة"
-            className="field h-12 flex-1 text-center text-xl font-bold tabular" />
-          <Button size="icon" className="h-12 w-12" loading={busy?.startsWith('p') && !busy?.startsWith('p-')} onClick={() => void customPoints(1)} icon={<Plus className="h-5 w-5" />} />
+            className="field h-11 flex-1 text-center text-lg font-semibold tabular" />
+          <Button size="icon" className="h-11 w-11" loading={busy?.startsWith('p') && !busy?.startsWith('p-')} onClick={() => void customPoints(1)} icon={<Plus className="h-5 w-5" />} />
         </div>
         <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="السبب (إلزامي عند الخصم)" className="field mt-2" />
         <div className="mt-2 flex flex-wrap gap-1.5">
@@ -177,8 +177,8 @@ export function MemberPanel({ memberId, onClose }: { memberId: string; onClose?:
 
       {/* من اللائحة */}
       {rules.length > 0 && (
-        <div className="card p-4 sm:p-5">
-          <div className="mb-3 text-sm font-semibold text-ink/80">من لائحة النقاط</div>
+        <div className="card p-4">
+          <div className="mb-2.5 text-[13px] font-medium text-muted">من لائحة النقاط</div>
           <div className="grid gap-2 sm:grid-cols-2">
             {[...positiveRules, ...negativeRules].map((r) => (
               <button
@@ -186,7 +186,7 @@ export function MemberPanel({ memberId, onClose }: { memberId: string; onClose?:
                 disabled={!!busy}
                 onClick={() => void points(r.value, undefined, r.id)}
                 className={cn(
-                  'flex cursor-pointer items-center justify-between gap-2 rounded-xl border px-3.5 py-2.5 text-start text-sm transition active:scale-[0.98] disabled:opacity-50',
+                  'flex cursor-pointer items-center justify-between gap-2 rounded-lg border px-3 py-2 text-start text-sm transition active:scale-[0.98] disabled:opacity-50',
                   r.value > 0 ? 'border-emerald-100 bg-emerald-50/50 hover:bg-emerald-50' : 'border-red-100 bg-red-50/40 hover:bg-red-50',
                 )}
               >
@@ -200,16 +200,14 @@ export function MemberPanel({ memberId, onClose }: { memberId: string; onClose?:
 
       {/* الإجراءات */}
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-        <ActionTile label="كرت أصفر" onClick={() => void card('yellow')} loading={busy === 'yellow'} icon={<span className="h-7 w-5 rounded-[4px] bg-yellow-400 shadow ring-1 ring-yellow-500/40" />} />
-        <ActionTile label="كرت أحمر" onClick={() => void card('red')} loading={busy === 'red'} icon={<span className="h-7 w-5 rounded-[4px] bg-red-600 shadow ring-1 ring-red-700/40" />} />
-        <ActionTile label="نقل لمجموعة" onClick={() => setModal('transfer')} icon={<ArrowLeftRight className="h-6 w-6 text-violet-600" />} />
-        <ActionTile label="منح وسام" onClick={() => setModal('badge')} icon={<Award className="h-6 w-6 text-gold-500" />} />
+        <ActionTile label="كرت أصفر" onClick={() => void card('yellow')} loading={busy === 'yellow'} icon={<span className="h-6 w-4 rounded-[3px] bg-yellow-400" />} />
+        <ActionTile label="كرت أحمر" onClick={() => void card('red')} loading={busy === 'red'} icon={<span className="h-6 w-4 rounded-[3px] bg-red-600" />} />
+        <ActionTile label="نقل لمجموعة" onClick={() => setModal('transfer')} icon={<ArrowLeftRight className="h-5 w-5 text-violet-600" />} />
+        <ActionTile label="منح وسام" onClick={() => setModal('badge')} icon={<Award className="h-5 w-5 text-gold-500" />} />
       </div>
 
-      <div className="card p-4 sm:p-5">
-        <div className="mb-3 flex items-center justify-between">
-          <span className="text-sm font-semibold text-ink/80">آخر حركات العضو</span>
-        </div>
+      <div>
+        <div className="mb-2 px-1 text-[13px] font-medium text-muted">آخر الحركات</div>
         <LogList {...logs} onLoadMore={logs.loadMore} compact showMember={false} onUndo={(l) => void undo(l.id)} undoingId={null} />
       </div>
 
@@ -270,9 +268,9 @@ function ActionTile({ label, icon, onClick, loading }: { label: string; icon: Re
     <button
       onClick={onClick}
       disabled={loading}
-      className="card flex cursor-pointer flex-col items-center justify-center gap-2 p-4 text-sm font-medium transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] active:scale-[0.97] disabled:opacity-60"
+      className="card flex cursor-pointer flex-col items-center justify-center gap-1.5 p-3 text-[13px] font-medium transition active:scale-[0.97] disabled:opacity-60"
     >
-      <span className="grid h-10 place-items-center">{icon}</span>
+      <span className="grid h-8 place-items-center">{icon}</span>
       {label}
     </button>
   )

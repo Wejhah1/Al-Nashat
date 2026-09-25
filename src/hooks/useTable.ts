@@ -39,6 +39,7 @@ export function useTable<T extends Record<string, unknown>>(table: string, opts:
       setLoading(false)
     }
     void load()
+    let firstSubscribe = true
 
     const channel = supabase
       .channel(`rt-${table}-${++channelSeq}`)
@@ -57,8 +58,12 @@ export function useTable<T extends Record<string, unknown>>(table: string, opts:
         })
       })
       .subscribe((status) => {
-        // عند إعادة الاتصال نعيد التحميل لضمان عدم فقدان أي تحديث
-        if (status === 'SUBSCRIBED') void load()
+        // التحميل عند الاشتراك (وعند إعادة الاتصال) لضمان عدم فقدان أي تحديث
+        // أول اشتراك لا يحتاج إعادة تحميل؛ إعادة الاتصال تحتاج
+        if (status === 'SUBSCRIBED') {
+          if (firstSubscribe) firstSubscribe = false
+          else void load()
+        }
       })
 
     return () => {

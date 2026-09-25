@@ -1,4 +1,5 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { DataProvider } from './context/DataContext'
@@ -31,12 +32,55 @@ const Seasons = lazy(() => import('./pages/admin/Seasons'))
 const SettingsPage = lazy(() => import('./pages/admin/SettingsPage'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
+const PREFETCH = [
+  () => import('./pages/Leaderboard'),
+  () => import('./pages/Display'),
+  () => import('./pages/PublicLog'),
+  () => import('./pages/Rules'),
+  () => import('./pages/News'),
+  () => import('./pages/NewsDetail'),
+  () => import('./pages/Portal'),
+  () => import('./pages/admin/Login'),
+  () => import('./pages/admin/Dashboard'),
+  () => import('./pages/admin/Attendance'),
+  () => import('./pages/admin/Scan'),
+  () => import('./pages/admin/Logs'),
+  () => import('./pages/admin/Members'),
+  () => import('./pages/admin/Groups'),
+  () => import('./pages/admin/RulesAdmin'),
+  () => import('./pages/admin/BadgesAdmin'),
+  () => import('./pages/admin/Content'),
+  () => import('./pages/admin/Cards'),
+  () => import('./pages/admin/Reports'),
+  () => import('./pages/admin/Seasons'),
+  () => import('./pages/admin/SettingsPage'),
+  () => import('./pages/NotFound'),
+]
+
+/** تحميل كل الصفحات مسبقاً في وقت الفراغ ليصبح التنقل فورياً */
+function usePrefetch() {
+  useEffect(() => {
+    const run = () => PREFETCH.forEach((f) => void f().catch(() => {}))
+    const w = window as Window & { requestIdleCallback?: (cb: () => void) => void }
+    const t = setTimeout(() => (w.requestIdleCallback ? w.requestIdleCallback(run) : run()), 1200)
+    return () => clearTimeout(t)
+  }, [])
+}
+
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => window.scrollTo(0, 0), [pathname])
+  return null
+}
+
 export default function App() {
+  usePrefetch()
   return (
     <BrowserRouter>
       <AuthProvider>
         <DataProvider>
           <FeedbackProvider>
+            <ScrollToTop />
             <Suspense fallback={<div className="islamic-pattern min-h-dvh"><PageLoader /></div>}>
               <Routes>
                 <Route element={<PublicLayout />}>
