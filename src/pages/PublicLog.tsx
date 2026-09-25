@@ -14,7 +14,7 @@ export function LogFilters({ type, setType, groupId, setGroupId }: {
   setGroupId: (g: string) => void
 }) {
   const { groups } = useData()
-  const types: (LogType | '')[] = ['', 'points', 'attendance', 'card', 'badge', 'transfer', 'edit', 'undo']
+  const types: (LogType | '')[] = ['', 'points', 'attendance', 'card', 'badge', 'transfer', 'holiday', 'season', 'undo']
   return (
     <div className="mb-6 space-y-3">
       <div className="scrollbar-thin -mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
@@ -57,7 +57,7 @@ export default function PublicLog() {
   const logs = useLogs({ type, groupId })
   return (
     <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
-      <PageHeader icon={<History className="h-6 w-6" />} title="سجل النقاط" subtitle="كل حركة على النقاط: ماذا حدث، ومن قام بها، ومتى — بشفافية كاملة" />
+      <PageHeader icon={<History className="h-6 w-6" />} title="سجل النقاط" />
       <LogFilters type={type} setType={setType} groupId={groupId} setGroupId={setGroupId} />
       <LogList {...logs} onLoadMore={logs.loadMore} />
     </div>

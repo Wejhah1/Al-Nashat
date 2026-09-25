@@ -68,7 +68,7 @@ export function PageHeader({ title, subtitle, icon, actions }: { title: ReactNod
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+      className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
     >
       <div className="flex items-center gap-3.5">
         {icon && (
@@ -77,7 +77,7 @@ export function PageHeader({ title, subtitle, icon, actions }: { title: ReactNod
           </div>
         )}
         <div>
-          <h1 className="text-2xl font-bold tracking-tight sm:text-[28px]">{title}</h1>
+          <h1 className="text-[22px] font-bold tracking-tight sm:text-[28px]">{title}</h1>
           {subtitle && <p className="mt-1 text-sm text-muted sm:text-[15px]">{subtitle}</p>}
         </div>
       </div>

@@ -39,7 +39,7 @@ export default function Scan() {
 
   return (
     <div>
-      <PageHeader icon={<ScanLine className="h-6 w-6" />} title="الإجراءات السريعة" subtitle="امسح البطاقة أو ابحث بالاسم أو الرقم لتنفيذ إجراء فوري" />
+      <PageHeader icon={<ScanLine className="h-6 w-6" />} title="إجراء سريع" />
       <div className="grid gap-6 lg:grid-cols-[380px_minmax(0,1fr)]">
         <div className="space-y-4 lg:sticky lg:top-6 lg:self-start">
           <div className="card p-4">

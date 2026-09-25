@@ -5,7 +5,7 @@ import { EyeOff, MonitorPlay, Search, Trophy, Users } from 'lucide-react'
 import { useData } from '../context/DataContext'
 import { Podium } from '../components/leaderboard/Podium'
 import { GroupStandings } from '../components/leaderboard/GroupStandings'
-import { LiveList, LiveTicker } from '../components/leaderboard/LiveFeed'
+import { LiveList } from '../components/leaderboard/LiveFeed'
 import { PageHeader, PageLoader, LeaderBadge } from '../components/ui/misc'
 import { cn, num } from '../lib/format'
 
@@ -22,7 +22,6 @@ export default function Leaderboard() {
       <PageHeader
         icon={<Trophy className="h-6 w-6" />}
         title="لوحة المتصدرين"
-        subtitle="تتحدث النتائج لحظياً مع كل نقطة تُضاف"
         actions={
           <Link to="/display" target="_blank" className="inline-flex h-10 items-center gap-2 rounded-xl border border-line bg-white px-4 text-sm font-medium text-primary-700 hover:bg-primary-50">
             <MonitorPlay className="h-4 w-4" />
@@ -38,10 +37,8 @@ export default function Leaderboard() {
         </div>
       )}
 
-      {settings?.show_live_feed !== false && <div className="mb-8"><LiveTicker /></div>}
-
-      <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
-        <div className="space-y-10">
+      <div className="grid gap-10 lg:grid-cols-[1fr_340px]">
+        <div className="space-y-14">
           <section className="card islamic-pattern overflow-hidden px-4 pb-0 pt-10 sm:px-10">
             <h2 className="mb-10 text-center text-lg font-bold text-primary-700">منصة التتويج</h2>
             {frozen ? (
@@ -55,7 +52,6 @@ export default function Leaderboard() {
             <h2 className="mb-4 flex items-center gap-2 text-xl font-bold">
               <Users className="h-5 w-5 text-primary-600" />
               المجموعات
-              <span className="text-sm font-normal text-muted">— اضغط على المجموعة لعرض أعضائها</span>
             </h2>
             <GroupStandings groups={groupStats} frozen={frozen} />
           </section>

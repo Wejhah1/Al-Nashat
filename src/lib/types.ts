@@ -51,7 +51,7 @@ export interface MemberInfo {
   excluded: boolean
 }
 
-export type LogType = 'points' | 'card' | 'attendance' | 'transfer' | 'badge' | 'edit' | 'undo'
+export type LogType = 'points' | 'card' | 'attendance' | 'transfer' | 'badge' | 'edit' | 'undo' | 'season' | 'holiday'
 
 export interface LogEntry {
   id: number
@@ -139,7 +139,8 @@ export interface HomeContent {
 }
 
 export interface CheckInResult {
-  status: 'ok' | 'duplicate' | 'not_found' | 'excluded'
+  status: 'ok' | 'duplicate' | 'not_found' | 'excluded' | 'off_day'
+  reason?: string
   attendance_status?: 'present' | 'late'
   points?: number
   at?: string
@@ -149,6 +150,7 @@ export interface CheckInResult {
 
 export interface PortalData {
   member: MemberInfo
+  season: { name: string; start: string; end: string } | null
   rank: number | null
   group_rank: number | null
   frozen: boolean
@@ -167,6 +169,7 @@ export interface ReportData {
   from: string
   to: string
   sessions: number
+  holidays: { name: string; start: string; end: string }[]
   session_days: { date: string; present: number; late: number }[]
   totals: {
     members: number
@@ -196,4 +199,35 @@ export interface ReportData {
     period_points: number
   }[]
   posts: { id: string; title: string; body: string | null; event_date: string; image_path: string | null; category: string | null }[]
+}
+
+export interface Season {
+  id: string
+  name: string
+  start_date: string
+  end_date: string
+  weekly_off: number[]
+  is_active: boolean
+  carried_points: boolean
+  created_at: string
+  closed_at: string | null
+}
+
+export interface Holiday {
+  id: string
+  season_id: string
+  name: string
+  start_date: string
+  end_date: string
+}
+
+export interface SeasonResult {
+  season_id: string
+  member_id: string
+  member_name: string
+  group_id: string | null
+  points: number
+  yellow_cards: number
+  red_cards: number
+  excluded: boolean
 }

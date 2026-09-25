@@ -49,7 +49,7 @@ export default function RulesAdmin() {
 
   return (
     <div>
-      <PageHeader icon={<BookOpenText className="h-6 w-6" />} title="إدارة لائحة النقاط" subtitle="القواعد تظهر للطلاب في صفحة اللائحة، وللمشرفين كأزرار سريعة"
+      <PageHeader icon={<BookOpenText className="h-6 w-6" />} title="لائحة النقاط"
         actions={<Button icon={<Plus className="h-4 w-4" />} onClick={() => open({})}>قاعدة جديدة</Button>} />
       <div className="card divide-y divide-line/50 overflow-hidden">
         {rules.length === 0 && <EmptyState title="لا توجد قواعد بعد" />}

@@ -23,7 +23,7 @@ export default function Content() {
   const tabs: [Tab, string, typeof Newspaper][] = [['posts', 'الأخبار والفعاليات', Newspaper], ['categories', 'التصنيفات', Tags], ['home', 'الواجهة الرئيسية', LayoutTemplate]]
   return (
     <div>
-      <PageHeader icon={<Newspaper className="h-6 w-6" />} title="الأخبار والواجهة" subtitle="انشر الأخبار والفعاليات بصورها، وتحكم في محتوى الصفحة الرئيسية" />
+      <PageHeader icon={<Newspaper className="h-6 w-6" />} title="الأخبار والواجهة" />
       <div className="mb-6 flex gap-1 overflow-x-auto rounded-2xl bg-sand p-1">
         {tabs.map(([k, l, I]) => (
           <button key={k} onClick={() => setTab(k)} className={cn('relative flex flex-1 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-xl px-4 py-2.5 text-sm font-medium transition', tab === k ? 'text-primary-700' : 'text-muted')}>

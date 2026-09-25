@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { motion } from 'motion/react'
-import { Download, FileSpreadsheet, FileUp, MoreVertical, PenLine, Plus, Search, Trash2, Upload, Users, Zap } from 'lucide-react'
+import { Crown, Download, FileSpreadsheet, FileUp, MoreVertical, PenLine, Plus, Search, Trash2, Upload, Users, Zap } from 'lucide-react'
 import { useData } from '../../context/DataContext'
 import { useTable } from '../../hooks/useTable'
 import { supabase, rpc, friendlyError } from '../../lib/supabase'
@@ -78,7 +78,32 @@ export default function Members() {
         {list.length === 0 ? (
           <EmptyState icon={<Users className="h-7 w-7" />} title="لا يوجد أعضاء">أضف عضواً جديداً أو استورد قائمة من Excel</EmptyState>
         ) : (
-          <div className="overflow-x-auto">
+          <>
+          <ul className="divide-y divide-line/50 md:hidden">
+            {list.map((m) => {
+              const g = m.group_id ? groupsById.get(m.group_id) : null
+              return (
+                <li key={m.id} className={cn('flex items-center gap-3 px-4 py-3.5', m.excluded && 'bg-red-50/40')}>
+                  <span className="h-10 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: g?.color ?? '#ddd' }} />
+                  <button onClick={() => setPanel(m.id)} className="min-w-0 flex-1 cursor-pointer text-start">
+                    <div className="flex items-center gap-2">
+                      <span className="truncate font-semibold">{m.name}</span>
+                      {m.is_leader && <Crown className="h-4 w-4 shrink-0 text-gold-500" />}
+                    </div>
+                    <div className="mt-0.5 flex items-center gap-2 text-xs text-muted">
+                      <span className="tabular" dir="ltr">#{m.member_no}</span>
+                      <span>{g?.name ?? '—'}</span>
+                      <CardsIndicator yellow={m.yellow_cards} red={m.red_cards} />
+                      {m.excluded && <span className="text-red-600">مُقصى</span>}
+                    </div>
+                  </button>
+                  <span className="tabular text-lg font-bold text-primary-700">{num(m.points)}</span>
+                  <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setEditing(m)} icon={<PenLine className="h-4 w-4" />} />
+                </li>
+              )
+            })}
+          </ul>
+          <div className="hidden overflow-x-auto md:block">
             <table className="w-full min-w-[720px] text-sm">
               <thead className="bg-sand/70 text-right text-xs text-muted">
                 <tr>
@@ -127,10 +152,12 @@ export default function Members() {
               </tbody>
             </table>
           </div>
+          </>
         )}
       </div>
 
-      {editing && <MemberForm member={editing === 'new' ? null : editing} priv={editing !== 'new' ? privates.get(editing.id) : undefined} onClose={() => setEditing(null)} />}
+      {editing && <MemberForm member={editing === 'new' ? null : editing} priv={editing !== 'new' ? privates.get(editing.id) : undefined} onClose={() => setEditing(null)}
+        onDelete={editing !== 'new' ? () => { const m = editing; setEditing(null); void remove(m) } : undefined} />}
       <Modal open={!!panel} onClose={() => setPanel(null)} size="lg" title="الإجراءات السريعة">
         {panel && <MemberPanel memberId={panel} />}
       </Modal>
@@ -139,7 +166,7 @@ export default function Members() {
   )
 }
 
-function MemberForm({ member, priv, onClose }: { member: Member | null; priv?: MemberPrivate; onClose: () => void }) {
+function MemberForm({ member, priv, onClose, onDelete }: { member: Member | null; priv?: MemberPrivate; onClose: () => void; onDelete?: () => void }) {
   const { groups } = useData()
   const { toast } = useFeedback()
   const [f, setF] = useState<FormState>({
@@ -185,7 +212,7 @@ function MemberForm({ member, priv, onClose }: { member: Member | null; priv?: M
 
   return (
     <Modal open onClose={onClose} title={member ? 'تعديل عضو' : 'عضو جديد'} subtitle={member ? `رقم العضوية ${member.member_no}` : 'سيُولَّد رقم العضوية والباركود تلقائياً'}
-      footer={<><Button variant="outline" onClick={onClose}>إلغاء</Button><Button loading={busy} onClick={() => void save()}>حفظ</Button></>}>
+      footer={<>{onDelete && <Button variant="ghost" className="me-auto text-red-600 hover:bg-red-50" icon={<Trash2 className="h-4 w-4" />} onClick={onDelete}>حذف</Button>}<Button variant="outline" onClick={onClose}>إلغاء</Button><Button loading={busy} onClick={() => void save()}>حفظ</Button></>}>
       <div className="space-y-4">
         <Input label="الاسم الكامل" value={f.name} onChange={(e) => set('name', e.target.value)} autoFocus />
         <Select label="المجموعة" value={f.group_id} onChange={(e) => set('group_id', e.target.value)}>

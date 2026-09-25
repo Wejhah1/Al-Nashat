@@ -37,7 +37,7 @@ export default function Login() {
       <div className="pointer-events-none absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-primary-400/25 blur-3xl" />
       <motion.div initial={{ opacity: 0, y: 20, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: 'spring', damping: 22 }} className="relative w-full max-w-md">
         <div className="mb-8 text-center">
-          <h1 className="font-display text-5xl font-bold"><span className="gold-text">النشاط الثقافي</span></h1>
+          <h1 className="whitespace-nowrap font-display text-[clamp(2.4rem,12vw,3rem)] font-bold"><span className="gold-text">النشاط الثقافي</span></h1>
           <div className="mt-2 tracking-[0.3em] text-gold-200">1448 هـ</div>
         </div>
         <form onSubmit={submit} className="rounded-3xl border border-white/10 bg-white p-7 shadow-2xl sm:p-9">

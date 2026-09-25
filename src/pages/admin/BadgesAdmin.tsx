@@ -38,7 +38,7 @@ export default function BadgesAdmin() {
 
   return (
     <div>
-      <PageHeader icon={<Award className="h-6 w-6" />} title="الأوسمة والإنجازات" subtitle="لكل وسام نقاط تُضاف تلقائياً للعضو عند منحه"
+      <PageHeader icon={<Award className="h-6 w-6" />} title="الأوسمة والإنجازات"
         actions={<Button icon={<Plus className="h-4 w-4" />} onClick={() => setEditing({ icon: 'award', color: '#C9A24B', points: 10 })}>وسام جديد</Button>} />
       {badges.length === 0 ? <div className="card"><EmptyState icon={<Award className="h-7 w-7" />} title="لا توجد أوسمة بعد" /></div> : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

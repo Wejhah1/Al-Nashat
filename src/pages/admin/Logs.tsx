@@ -37,7 +37,7 @@ export default function Logs() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <PageHeader icon={<History className="h-6 w-6" />} title="سجل الأحداث" subtitle="أول 20 حدثاً، ويمكنك تحميل المزيد حتى بداية السجل. التراجع ذري وآمن." />
+      <PageHeader icon={<History className="h-6 w-6" />} title="سجل الأحداث" />
       <LogFilters type={type} setType={setType} groupId={groupId} setGroupId={setGroupId} />
       <LogList {...logs} onLoadMore={logs.loadMore} onUndo={(l) => void undo(l)} undoingId={undoing} />
     </div>

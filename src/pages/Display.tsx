@@ -37,7 +37,7 @@ export default function Display() {
 
       <header className="relative mb-5 flex items-center justify-between">
         <div>
-          <h1 className="font-display text-4xl font-bold xl:text-6xl"><span className="gold-text">{home.title}</span></h1>
+          <h1 className="whitespace-nowrap font-display text-4xl font-bold xl:text-6xl"><span className="gold-text">{home.title}</span></h1>
           <div className="mt-2 tracking-[0.3em] text-gold-200 xl:text-xl">{home.subtitle}</div>
         </div>
         <div className="flex items-center gap-4">

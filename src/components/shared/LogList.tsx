@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'motion/react'
-import { ArrowLeftRight, Award, CalendarCheck, ChevronDown, PenLine, RotateCcw, Sparkles, Square, Undo2, History } from 'lucide-react'
+import { ArrowLeftRight, Award, CalendarCheck, CalendarOff, ChevronDown, Flag, PenLine, RotateCcw, Sparkles, Square, Undo2, History } from 'lucide-react'
 import type { LogEntry, LogType } from '../../lib/types'
 import { useData } from '../../context/DataContext'
 import { formatHijri, formatTime } from '../../lib/hijri'
@@ -15,6 +15,8 @@ export const LOG_TYPES: Record<LogType, { label: string; icon: typeof Sparkles; 
   badge: { label: 'وسام', icon: Award, color: 'text-gold-600', bg: 'bg-gold-50' },
   edit: { label: 'تعديل', icon: PenLine, color: 'text-slate-600', bg: 'bg-slate-100' },
   undo: { label: 'تراجع', icon: RotateCcw, color: 'text-rose-700', bg: 'bg-rose-50' },
+  season: { label: 'موسم', icon: Flag, color: 'text-primary-700', bg: 'bg-gold-50' },
+  holiday: { label: 'إجازة', icon: CalendarOff, color: 'text-teal-700', bg: 'bg-teal-50' },
 }
 
 interface Props {
@@ -94,7 +96,7 @@ export function LogList({ items, loading, hasMore, loadingMore, onLoadMore, onUn
                           </span>
                         )}
                       </div>
-                      <div className={cn('text-sm text-ink/80', reverted && 'line-through')}>{l.title}</div>
+                      <div className={cn(l.member_name ? 'text-sm text-ink/80' : 'font-semibold', reverted && 'line-through')}>{l.title}</div>
                       <div className="mt-0.5 flex flex-wrap items-center gap-x-2 text-[11px] text-muted">
                         <span>{formatTime(l.ts)}</span>
                         {l.admin_name && <span>• بواسطة {l.admin_name}</span>}

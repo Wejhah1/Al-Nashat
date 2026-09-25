@@ -27,6 +27,7 @@ const BadgesAdmin = lazy(() => import('./pages/admin/BadgesAdmin'))
 const Content = lazy(() => import('./pages/admin/Content'))
 const Cards = lazy(() => import('./pages/admin/Cards'))
 const Reports = lazy(() => import('./pages/admin/Reports'))
+const Seasons = lazy(() => import('./pages/admin/Seasons'))
 const SettingsPage = lazy(() => import('./pages/admin/SettingsPage'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
@@ -57,6 +58,7 @@ export default function App() {
                   <Route path="logs" element={<Logs />} />
                   <Route path="reports" element={<Reports />} />
                   <Route path="members" element={<OwnerOnly><Members /></OwnerOnly>} />
+                  <Route path="seasons" element={<OwnerOnly><Seasons /></OwnerOnly>} />
                   <Route path="groups" element={<OwnerOnly><Groups /></OwnerOnly>} />
                   <Route path="rules" element={<OwnerOnly><RulesAdmin /></OwnerOnly>} />
                   <Route path="badges" element={<OwnerOnly><BadgesAdmin /></OwnerOnly>} />

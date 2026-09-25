@@ -13,7 +13,7 @@ export default function News() {
   const list = cat ? posts.filter((p) => p.category_id === cat) : posts
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
-      <PageHeader icon={<Newspaper className="h-6 w-6" />} title="الأخبار والفعاليات" subtitle="أبرز ما جرى في النشاط الثقافي" />
+      <PageHeader icon={<Newspaper className="h-6 w-6" />} title="الأخبار والفعاليات" />
       <div className="scrollbar-thin -mx-4 mb-6 flex gap-2 overflow-x-auto px-4 pb-1">
         {[{ id: '', name: 'الكل', color: '#0F4C3A' }, ...categories].map((c) => (
           <button

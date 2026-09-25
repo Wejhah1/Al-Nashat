@@ -20,7 +20,7 @@ export default function Home() {
     <div>
       {/* ===== البطل ===== */}
       <section className="relative px-4 pb-10 pt-4 sm:px-6">
-        <div className="islamic-pattern-dark relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] px-6 py-14 text-center text-white shadow-[0_30px_80px_-30px_rgb(11_59_45/0.6)] sm:px-10 sm:py-20">
+        <div className="islamic-pattern-dark relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] px-5 py-12 text-center text-white shadow-[0_30px_80px_-30px_rgb(11_59_45/0.6)] sm:px-10 sm:py-20">
           <div className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-gold-400/20 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-32 -right-16 h-80 w-80 rounded-full bg-primary-400/25 blur-3xl" />
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="relative mb-5 inline-flex items-center gap-2 rounded-full border border-gold-300/30 bg-white/5 px-4 py-1.5 text-xs text-gold-100 backdrop-blur">
@@ -31,7 +31,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.08 }}
-            className="relative font-display text-5xl font-bold leading-tight sm:text-7xl"
+            className="relative whitespace-nowrap font-display text-[clamp(2.2rem,11.5vw,4.75rem)] font-bold leading-tight"
           >
             <span className="gold-text">{home.title}</span>
           </motion.h1>
@@ -41,16 +41,16 @@ export default function Home() {
             <span className="h-px w-10 bg-gradient-to-r from-gold-300 to-transparent" />
           </motion.div>
           {home.tagline && (
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="relative mx-auto mt-6 max-w-xl text-lg leading-relaxed text-white/80">
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="relative mx-auto mt-5 max-w-xl text-base leading-relaxed text-white/80 sm:text-lg">
               {home.tagline}
             </motion.p>
           )}
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="relative mt-9 flex flex-wrap items-center justify-center gap-3">
-            <Link to="/me" className="inline-flex h-14 items-center gap-2.5 rounded-2xl bg-gradient-to-b from-gold-200 to-gold-400 px-7 text-lg font-semibold text-primary-900 shadow-[0_10px_30px_-8px_rgb(201_162_75/0.8)] transition hover:brightness-105 active:scale-[0.98]">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="relative mx-auto mt-8 grid max-w-md grid-cols-2 gap-3 sm:mt-9">
+            <Link to="/me" className="inline-flex h-13 items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-gold-200 to-gold-400 px-3 text-base sm:h-14 sm:px-7 sm:text-lg font-semibold text-primary-900 shadow-[0_10px_30px_-8px_rgb(201_162_75/0.8)] transition hover:brightness-105 active:scale-[0.98]">
               <UserRound className="h-5 w-5" />
               متابعة تقدمي
             </Link>
-            <Link to="/leaderboard" className="inline-flex h-14 items-center gap-2.5 rounded-2xl border border-white/25 bg-white/10 px-7 text-lg font-medium text-white backdrop-blur transition hover:bg-white/20">
+            <Link to="/leaderboard" className="inline-flex h-13 items-center justify-center gap-2 rounded-2xl border border-white/25 bg-white/10 px-3 text-base sm:h-14 sm:px-7 sm:text-lg font-medium text-white backdrop-blur transition hover:bg-white/20">
               <Trophy className="h-5 w-5 text-gold-200" />
               المتصدرون
             </Link>
@@ -58,7 +58,7 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="mx-auto max-w-7xl space-y-14 px-4 sm:px-6">
+      <div className="mx-auto max-w-7xl space-y-16 px-4 sm:px-6">
         {home.show_feed && settings?.show_live_feed !== false && <LiveTicker />}
 
         {/* ===== المجموعات ===== */}

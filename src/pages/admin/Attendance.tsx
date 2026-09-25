@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { AlertOctagon, CheckCircle2, Clock, Keyboard, Play, ScanQrCode, Undo2, UserX, Volume2, VolumeX, XCircle } from 'lucide-react'
+import { AlertOctagon, CalendarOff, CheckCircle2, Clock, Keyboard, Play, ScanQrCode, Undo2, UserX, Volume2, VolumeX, XCircle } from 'lucide-react'
 import { Scanner } from '../../components/scanner/Scanner'
 import { Button } from '../../components/ui/Button'
 import { PageHeader } from '../../components/ui/misc'
@@ -10,7 +10,8 @@ import { rpc } from '../../lib/supabase'
 import type { CheckInResult, MemberInfo } from '../../lib/types'
 import { playError, playSuccess, unlockAudio } from '../../lib/sound'
 import { cn, num } from '../../lib/format'
-import { formatHijri, formatTime, formatWeekday } from '../../lib/hijri'
+import { formatHijri, formatTime, formatWeekday, fromDateOnly, todayISO } from '../../lib/hijri'
+import type { Holiday, Season } from '../../lib/types'
 import { useTodayAttendance } from './Dashboard'
 
 type Overlay =
@@ -19,6 +20,7 @@ type Overlay =
   | { kind: 'excluded'; member: MemberInfo }
   | { kind: 'not_found'; code: string }
   | { kind: 'error'; message: string }
+  | { kind: 'off_day'; reason: string }
 
 interface Recent {
   logId?: number
@@ -33,7 +35,8 @@ type LateMode = 'auto' | 'present' | 'late'
 const OVERLAY_MS = 2000
 
 export default function Attendance() {
-  const { settings } = useData()
+  const { settings, season, holidays } = useData()
+  const todayOff = offReason(season, holidays)
   const { toast } = useFeedback()
   const today = useTodayAttendance()
   const [started, setStarted] = useState(false)
@@ -77,6 +80,8 @@ export default function Attendance() {
       } else if (r.status === 'duplicate' && r.member) {
         seen.current.set(code, r.member)
         show({ kind: 'duplicate', member: r.member, at: r.at })
+      } else if (r.status === 'off_day') {
+        show({ kind: 'off_day', reason: r.reason ?? 'اليوم إجازة' })
       } else if (r.status === 'excluded' && r.member) {
         show({ kind: 'excluded', member: r.member })
       } else {
@@ -103,7 +108,7 @@ export default function Attendance() {
   if (!started) {
     return (
       <div>
-        <PageHeader icon={<ScanQrCode className="h-6 w-6" />} title="التحضير السريع" subtitle="مسح مستمر لبطاقات الأعضاء مع احتساب نقاط الحضور تلقائياً" />
+        <PageHeader icon={<ScanQrCode className="h-6 w-6" />} title="التحضير السريع" />
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="islamic-pattern-dark relative mx-auto max-w-xl overflow-hidden rounded-[2rem] p-10 text-center text-white shadow-[var(--shadow-lift)]">
           <div className="mx-auto mb-6 grid h-24 w-24 place-items-center rounded-3xl bg-gradient-to-br from-gold-200 to-gold-400 text-primary-900 shadow-xl">
             <ScanQrCode className="h-12 w-12" />
@@ -113,6 +118,11 @@ export default function Attendance() {
             <div className="rounded-2xl bg-white/10 p-4"><div className="tabular text-3xl font-bold text-gold-200">+{num(settings?.attendance_points ?? 25)}</div><div className="mt-1 text-white/70">نقاط الحضور</div></div>
             <div className="rounded-2xl bg-white/10 p-4"><div className="tabular text-3xl font-bold">{num(today)}</div><div className="mt-1 text-white/70">حضروا اليوم</div></div>
           </div>
+          {todayOff && (
+            <div className="mt-6 flex items-center justify-center gap-2 rounded-2xl bg-white/10 px-4 py-3 text-gold-100">
+              <CalendarOff className="h-5 w-5" />اليوم: {todayOff}
+            </div>
+          )}
           {settings?.late_after && <div className="mt-4 text-sm text-white/70">يُحتسب التأخر تلقائياً بعد الساعة {settings.late_after.slice(0, 5)} (+{num(settings.late_points)})</div>}
           <Button variant="gold" size="lg" className="mt-8 w-full" icon={<Play className="h-5 w-5" />} onClick={() => { unlockAudio(); setStarted(true) }}>
             بدء التحضير
@@ -190,12 +200,13 @@ export default function Attendance() {
 function ScanOverlay({ o, onClose }: { o: Overlay; onClose: () => void }) {
   const ok = o.kind === 'ok'
   const member = 'member' in o ? o.member : null
-  const Icon = ok ? CheckCircle2 : o.kind === 'duplicate' ? AlertOctagon : o.kind === 'excluded' ? UserX : XCircle
+  const Icon = ok ? CheckCircle2 : o.kind === 'off_day' ? CalendarOff : o.kind === 'duplicate' ? AlertOctagon : o.kind === 'excluded' ? UserX : XCircle
   const title =
     o.kind === 'ok' ? (o.late ? 'تم التحضير (متأخر)' : 'تم التحضير بنجاح')
       : o.kind === 'duplicate' ? 'تم التحضير من قبل'
         : o.kind === 'excluded' ? 'العضو مُقصى'
           : o.kind === 'not_found' ? 'بطاقة غير معروفة'
+            : o.kind === 'off_day' ? 'لا يوجد تحضير اليوم'
             : 'تعذر التحضير'
 
   return (
@@ -232,7 +243,16 @@ function ScanOverlay({ o, onClose }: { o: Overlay; onClose: () => void }) {
       )}
       {o.kind === 'not_found' && <div className="relative mt-4 text-xl text-white/85" dir="ltr">{o.code}</div>}
       {o.kind === 'error' && <div className="relative mt-4 max-w-md text-lg text-white/85">{o.message}</div>}
+      {o.kind === 'off_day' && <div className="relative mt-4 text-2xl text-white/90">{o.reason}</div>}
       <motion.div className="absolute bottom-0 right-0 h-2 bg-white/60" initial={{ width: '100%' }} animate={{ width: '0%' }} transition={{ duration: OVERLAY_MS / 1000, ease: 'linear' }} />
     </motion.div>
   )
+}
+
+function offReason(season: Season | null, holidays: Holiday[]): string | null {
+  const d = todayISO()
+  if (!season) return 'لا يوجد موسم نشط'
+  if (d < season.start_date || d > season.end_date) return `خارج مدة ${season.name}`
+  if (season.weekly_off.includes(fromDateOnly(d).getUTCDay())) return 'إجازة نهاية الأسبوع'
+  return holidays.find((h) => h.season_id === season.id && d >= h.start_date && d <= h.end_date)?.name ?? null
 }

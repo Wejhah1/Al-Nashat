@@ -58,7 +58,7 @@ export default function Dashboard() {
         <StatCard label="المُقصَون" value={num(excluded)} icon={<ShieldAlert className="h-5 w-5" />} accent="#B42335" />
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="mt-6 hidden grid-cols-3 gap-3 lg:grid lg:grid-cols-5">
         {actions.map((a, i) => (
           <motion.div key={a.to} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
             <Link
@@ -79,7 +79,7 @@ export default function Dashboard() {
         ))}
       </div>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_360px]">
+      <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_360px]">
         <section>
           <h2 className="mb-4 text-lg font-bold">ترتيب المجموعات</h2>
           <GroupStandings groups={groupStats} />

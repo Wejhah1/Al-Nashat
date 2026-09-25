@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Bar, BarChart, CartesianGrid, Cell, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { BarChart3, CalendarRange, FileDown, FileSpreadsheet, Printer } from 'lucide-react'
 import { rpc, mediaUrl } from '../../lib/supabase'
+import { useData } from '../../context/DataContext'
 import type { ReportData } from '../../lib/types'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Field'
@@ -17,6 +18,7 @@ const LATE = '#b9770e'
 
 export default function Reports() {
   const { toast } = useFeedback()
+  const { seasons } = useData()
   const [from, setFrom] = useState(addDaysISO(todayISO(), -6))
   const [to, setTo] = useState(todayISO())
   const [data, setData] = useState<ReportData | null>(null)
@@ -26,7 +28,7 @@ export default function Reports() {
     ['اليوم', () => { setFrom(todayISO()); setTo(todayISO()) }],
     ['آخر 7 أيام', () => { setFrom(addDaysISO(todayISO(), -6)); setTo(todayISO()) }],
     ['آخر 30 يوماً', () => { setFrom(addDaysISO(todayISO(), -29)); setTo(todayISO()) }],
-    ['منذ البداية', () => { setFrom('2025-01-01'); setTo(todayISO()) }],
+    ...seasons.map((sn): [string, () => void] => [sn.name, () => { setFrom(sn.start_date); setTo(sn.end_date < todayISO() ? sn.end_date : todayISO()) }]),
   ]
 
   const generate = async () => {
@@ -56,7 +58,7 @@ export default function Reports() {
     <div>
       <style>{`@media print { @page { size: A4 portrait; margin: 12mm 10mm; } }`}</style>
       <div className="no-print">
-        <PageHeader icon={<BarChart3 className="h-6 w-6" />} title="التقارير والإحصائيات" subtitle="اختر الفترة ثم أنشئ التقرير لطباعته أو حفظه PDF بحجم A4" />
+        <PageHeader icon={<BarChart3 className="h-6 w-6" />} title="التقارير والإحصائيات" />
         <div className="card mb-6 p-5">
           <div className="mb-4 flex flex-wrap gap-2">
             {presets.map(([l, fn]) => (
@@ -174,6 +176,19 @@ function ReportDocument({ data }: { data: ReportData }) {
                 <Bar dataKey="late" name="متأخر" stackId="a" fill={LATE} stroke="#fff" strokeWidth={2} radius={[4, 4, 0, 0]} isAnimationActive={false} />
               </BarChart>
             </ResponsiveContainer>
+          </div>
+        </section>
+      )}
+
+      {data.holidays.length > 0 && (
+        <section className="mt-8" style={{ breakInside: 'avoid' }}>
+          <SectionTitle>الإجازات خلال الفترة</SectionTitle>
+          <div className="flex flex-wrap gap-2">
+            {data.holidays.map((h) => (
+              <span key={h.name + h.start} className="rounded-xl border border-line bg-ivory/60 px-3 py-2 text-sm">
+                <b>{h.name}</b> <span className="text-muted">· {h.start === h.end ? formatHijri(h.start) : `${formatHijriShort(h.start)} — ${formatHijri(h.end)}`}</span>
+              </span>
+            ))}
           </div>
         </section>
       )}

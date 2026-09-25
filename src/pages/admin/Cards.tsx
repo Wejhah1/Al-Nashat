@@ -31,8 +31,8 @@ export default function Cards() {
     <div>
       <style>{`@media print { @page { size: A4 portrait; margin: 0; } }`}</style>
       <div className="no-print">
-        <PageHeader icon={<CreditCard className="h-6 w-6" />} title="طباعة البطاقات" subtitle="ورق A4 طولي — 8 بطاقات في الصفحة (عمودان × 4 صفوف)"
-          actions={<Button icon={<Printer className="h-4 w-4" />} disabled={!selected.length} onClick={() => window.print()}>طباعة {num(selected.length)} بطاقة</Button>} />
+        <PageHeader icon={<CreditCard className="h-6 w-6" />} title="طباعة البطاقات" subtitle="A4 طولي · 8 بطاقات في الصفحة"
+          actions={<Button icon={<Printer className="h-4 w-4" />} disabled={!selected.length} onClick={() => void document.fonts.ready.then(() => window.print())}>طباعة {num(selected.length)} بطاقة</Button>} />
         <div className="mb-6 grid gap-4 lg:grid-cols-[300px_1fr]">
           <div className="card space-y-3 p-4">
             <Select value={groupId} onChange={(e) => { setGroupId(e.target.value); setPicked(null) }}>

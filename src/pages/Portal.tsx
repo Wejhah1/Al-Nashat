@@ -183,6 +183,7 @@ function PortalView({ data, onLogout }: { data: PortalData; onLogout: () => void
               </div>
               <div className="mt-1 flex flex-wrap items-center gap-3 text-sm text-white/75">
                 <span>مجموعة {m.group_name ?? '—'}</span>
+                {data.season && <span>{data.season.name}</span>}
                 <span className="tabular" dir="ltr">#{m.member_no}</span>
                 <CardsIndicator yellow={m.yellow_cards} red={m.red_cards} />
               </div>

@@ -46,7 +46,7 @@ export default function SettingsPage() {
 
   return (
     <div>
-      <PageHeader icon={<SettingsIcon className="h-6 w-6" />} title="الإعدادات" subtitle="تحكم في النقاط التلقائية وقواعد النظام وخيارات العرض"
+      <PageHeader icon={<SettingsIcon className="h-6 w-6" />} title="الإعدادات"
         actions={<Button loading={busy} icon={<Save className="h-4 w-4" />} onClick={() => void save()}>حفظ الإعدادات</Button>} />
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="card p-6">

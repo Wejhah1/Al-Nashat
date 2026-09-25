@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo, type ReactNode } from 'react'
 import { useTable } from '../hooks/useTable'
-import type { Badge, Group, HomeContent, Member, MemberBadge, PointRule, PostCategory, Settings } from '../lib/types'
+import type { Badge, Group, Holiday, HomeContent, Member, MemberBadge, PointRule, PostCategory, Season, Settings } from '../lib/types'
 
 export interface GroupStat extends Group {
   points: number
@@ -19,6 +19,9 @@ interface DataValue {
   memberBadges: MemberBadge[]
   categories: PostCategory[]
   home: HomeContent
+  seasons: Season[]
+  season: Season | null
+  holidays: Holiday[]
   groupsById: Map<string, Group>
   membersById: Map<string, Member>
   groupStats: GroupStat[]
@@ -45,6 +48,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const rules = useTable<PointRule & Record<string, unknown>>('point_rules', { order: { column: 'sort' } })
   const memberBadges = useTable<MemberBadge & Record<string, unknown>>('member_badges', { order: { column: 'awarded_at' } })
   const categories = useTable<PostCategory & Record<string, unknown>>('post_categories', { order: { column: 'sort' } })
+  const seasons = useTable<Season & Record<string, unknown>>('seasons', { order: { column: 'start_date' } })
+  const holidays = useTable<Holiday & Record<string, unknown>>('holidays', { order: { column: 'start_date' } })
   const content = useTable<{ key: string; value: Partial<HomeContent> } & Record<string, unknown>>('site_content', { key: 'key' })
 
   const value = useMemo<DataValue>(() => {
@@ -79,12 +84,15 @@ export function DataProvider({ children }: { children: ReactNode }) {
       memberBadges: memberBadges.rows,
       categories: [...categories.rows].sort((a, b) => a.sort - b.sort),
       home: { ...DEFAULT_HOME, ...(homeRow?.value ?? {}) },
+      seasons: [...seasons.rows].sort((a, b) => b.start_date.localeCompare(a.start_date)),
+      season: seasons.rows.find((x) => x.is_active) ?? null,
+      holidays: [...holidays.rows].sort((a, b) => a.start_date.localeCompare(b.start_date)),
       groupsById,
       membersById,
       groupStats: stats,
       ranked,
     }
-  }, [groups.rows, members.rows, settings.rows, badges.rows, rules.rows, memberBadges.rows, categories.rows, content.rows,
+  }, [groups.rows, members.rows, settings.rows, badges.rows, rules.rows, memberBadges.rows, categories.rows, content.rows, seasons.rows, holidays.rows,
       groups.loading, members.loading, settings.loading])
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>

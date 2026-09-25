@@ -57,7 +57,7 @@ export default function Groups() {
 
   return (
     <div>
-      <PageHeader icon={<Shapes className="h-6 w-6" />} title="المجموعات" subtitle="النقاط الإجمالية لكل مجموعة تُحسب تلقائياً من نقاط أعضائها"
+      <PageHeader icon={<Shapes className="h-6 w-6" />} title="المجموعات"
         actions={<Button icon={<Plus className="h-4 w-4" />} onClick={() => setEditing({ color: PALETTE[groups.length % PALETTE.length] })}>مجموعة جديدة</Button>} />
       <div className="grid gap-4 sm:grid-cols-2">
         {[...groupStats].sort((a, b) => a.sort - b.sort).map((g) => (
