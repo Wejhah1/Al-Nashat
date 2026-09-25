@@ -7,6 +7,7 @@ import { BottomNav, MoreSheet, type NavItem } from './BottomNav'
 import { cn } from '../../lib/format'
 import { useAuth } from '../../context/AuthContext'
 import { PageLoader } from '../ui/misc'
+import { RouteErrorBoundary } from './RouteErrorBoundary'
 
 const NAV = [
   { to: '/', label: 'الرئيسية', icon: Home, end: true },
@@ -67,7 +68,7 @@ export function PublicLayout() {
       </header>
 
       <main className="flex-1 pb-24 lg:pb-0">
-        <Suspense fallback={<PageLoader />}><Outlet /></Suspense>
+        <RouteErrorBoundary key={loc.pathname}><Suspense fallback={<PageLoader />}><Outlet /></Suspense></RouteErrorBoundary>
       </main>
 
       <footer className="no-print hidden border-t border-line/60 lg:block">

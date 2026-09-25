@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { ArrowLeft, Crown, Trophy, UserRound } from 'lucide-react'
 import { useData } from '../context/DataContext'
 import { usePosts } from '../hooks/usePosts'
-import { PostCard } from '../components/shared/PostCard'
+import { FeaturePostCard } from '../components/shared/PostCard'
 import { LiveTicker } from '../components/leaderboard/LiveFeed'
 import { cn, num } from '../lib/format'
 import { formatHijri, formatWeekday } from '../lib/hijri'
@@ -77,8 +77,8 @@ export default function Home() {
             ) : posts.length === 0 ? (
               <div className="card p-8 text-center text-sm text-muted">لا توجد أخبار بعد</div>
             ) : (
-              <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
-                {posts.slice(0, 6).map((p) => <PostCard key={p.id} post={p} />)}
+              <div className="grid gap-5 md:grid-cols-3">
+                {posts.slice(0, 6).map((p) => <FeaturePostCard key={p.id} post={p} />)}
               </div>
             )}
           </section>

@@ -1,10 +1,12 @@
 import { createClient } from '@supabase/supabase-js'
+import { processLock } from '@supabase/auth-js'
 
 const url = import.meta.env.VITE_SUPABASE_URL ?? 'https://bjcnyecnffdscoyaozic.supabase.co'
 const key = import.meta.env.VITE_SUPABASE_ANON_KEY ?? 'sb_publishable_FU9k_0JiE8OQpuKEgJfyuw_rCp0jneh'
 
 export const supabase = createClient(url, key, {
-  auth: { persistSession: true, autoRefreshToken: true },
+  // قفل داخل الصفحة بدل قفل المتصفح: يمنع تجمّد الطلبات بعد التنقل أو الرجوع للتطبيق
+  auth: { persistSession: true, autoRefreshToken: true, lock: processLock },
   realtime: { params: { eventsPerSecond: 20 } },
 })
 

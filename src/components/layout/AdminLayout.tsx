@@ -10,6 +10,7 @@ import { Brand } from './Brand'
 import { useAuth } from '../../context/AuthContext'
 import { cn } from '../../lib/format'
 import { PageLoader } from '../ui/misc'
+import { RouteErrorBoundary } from './RouteErrorBoundary'
 import { Button } from '../ui/Button'
 import { BottomNav, MoreSheet, type NavItem } from './BottomNav'
 
@@ -160,7 +161,7 @@ export function AdminLayout() {
       </header>
 
       <main className="mx-auto max-w-6xl px-4 pb-28 pt-5 sm:px-6 lg:py-10 print:m-0 print:max-w-none print:p-0">
-        <Suspense fallback={<PageLoader />}><Outlet /></Suspense>
+        <RouteErrorBoundary key={loc.pathname}><Suspense fallback={<PageLoader />}><Outlet /></Suspense></RouteErrorBoundary>
       </main>
 
       <MoreSheet open={more} onClose={() => setMore(false)} items={moreItems} footer={<MoreFooter />} />

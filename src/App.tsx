@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from 'react'
+import { lazy as reactLazy, Suspense, useEffect, type ComponentType } from 'react'
 import { useLocation } from 'react-router-dom'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
@@ -8,6 +8,21 @@ import { PublicLayout } from './components/layout/PublicLayout'
 import { AdminLayout, OwnerOnly } from './components/layout/AdminLayout'
 import { PageLoader } from './components/ui/misc'
 import Home from './pages/Home'
+
+/** تحميل كسول مع إعادة تحميل الصفحة مرة واحدة إذا تغيّرت الملفات بعد نشر جديد */
+function lazy<T extends ComponentType<object>>(factory: () => Promise<{ default: T }>) {
+  return reactLazy(() =>
+    factory().catch((err) => {
+      if (!sessionStorage.getItem('chunk-reload')) {
+        sessionStorage.setItem('chunk-reload', '1')
+        window.location.reload()
+        return new Promise<never>(() => {})
+      }
+      throw err
+    }),
+  )
+}
+
 
 const Leaderboard = lazy(() => import('./pages/Leaderboard'))
 const Display = lazy(() => import('./pages/Display'))
